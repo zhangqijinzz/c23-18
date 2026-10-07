@@ -29,4 +29,28 @@ describe("issue detection", () => {
       expect.arrayContaining(["empty", "too-short", "too-fast", "too-long"]),
     );
   });
+  it("counts visual lines with the same rule as the preview", () => {
+    // 空白行在预览中不可见，两行文本不算超行
+    expect(
+      detectIssues([cue("1", 0, 2000, "第一行\n\n第二行")]).some(
+        (i) => i.type === "too-long",
+      ),
+    ).toBe(false);
+    expect(
+      detectIssues([cue("2", 0, 2000, "第一行\n第二行\n")]).some(
+        (i) => i.type === "too-long",
+      ),
+    ).toBe(false);
+    // 折行后超过两行的内容会被检出
+    const tooLong = detectIssues([
+      cue("3", 0, 4000, `${"汉".repeat(22)}\n短句`),
+    ]).find((i) => i.type === "too-long");
+    expect(tooLong?.message).toBe("超过两行，画面占用较高");
+    // 刚好占满两行的内容本就合规，不能误报
+    expect(
+      detectIssues([cue("4", 0, 4000, "汉".repeat(42))]).some(
+        (i) => i.type === "too-long",
+      ),
+    ).toBe(false);
+  });
 });

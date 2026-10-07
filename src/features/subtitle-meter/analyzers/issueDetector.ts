@@ -1,4 +1,5 @@
 import type { SubtitleCue, SubtitleIssue } from "../models";
+import { countVisualLines, MAX_VISUAL_LINES } from "./textLayout";
 export function detectIssues(cues: SubtitleCue[]): SubtitleIssue[] {
   const issues: SubtitleIssue[] = [];
   const add = (
@@ -33,7 +34,7 @@ export function detectIssues(cues: SubtitleCue[]): SubtitleIssue[] {
       if (cps > 18)
         add(cue, "too-fast", "warning", `阅读速度 ${cps.toFixed(1)} 字/秒`);
     }
-    if (chars > 42 || cue.text.split("\n").length > 2)
+    if (chars > 42 || countVisualLines(cue.text) > MAX_VISUAL_LINES)
       add(
         cue,
         "too-long",
