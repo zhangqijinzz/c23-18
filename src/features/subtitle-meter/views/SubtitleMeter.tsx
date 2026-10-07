@@ -181,7 +181,11 @@ export function SubtitleMeter() {
                 vm={vm}
                 selectedId={state.selectedId}
               />
-              <PreviewModule cue={selected} />
+              <PreviewModule
+                cue={selected}
+                vm={vm}
+                capacityEm={state.lineCapacityEm}
+              />
             </div>
           ) : (
             emptyTab(

@@ -28,7 +28,7 @@ export class SubtitleMeterViewModel {
     phase: MeterState["phase"] = "editing",
   ) {
     project.updatedAt = Date.now();
-    const issues = detectIssues(project.cues);
+    const issues = detectIssues(project.cues, this.state.lineCapacityEm);
     this.publish({ project, issues, phase, notice: "" });
     try {
       await projectRepository.save(project);
@@ -47,7 +47,7 @@ export class SubtitleMeterViewModel {
       if (project)
         this.publish({
           project,
-          issues: detectIssues(project.cues),
+          issues: detectIssues(project.cues, this.state.lineCapacityEm),
           phase: "ready",
           selectedId: project.cues[0]?.id ?? null,
           notice: "已恢复上次编辑",
@@ -88,6 +88,16 @@ export class SubtitleMeterViewModel {
   }
   setZoom(zoom: number) {
     this.publish({ zoom });
+  }
+  // 预览把实测到的每行可用宽度（em）回传，检查立即按同一口径重算。
+  setLineCapacity(capacityEm: number) {
+    if (!Number.isFinite(capacityEm) || capacityEm <= 0) return;
+    const rounded = Math.round(capacityEm * 10) / 10;
+    if (Math.abs(rounded - this.state.lineCapacityEm) < 0.05) return;
+    const patch: Partial<MeterState> = { lineCapacityEm: rounded };
+    if (this.state.project)
+      patch.issues = detectIssues(this.state.project.cues, rounded);
+    this.publish(patch);
   }
   async editCue(
     id: string,

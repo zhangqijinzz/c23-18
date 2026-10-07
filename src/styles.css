@@ -509,6 +509,18 @@ h1 em {
     monospace;
   letter-spacing: 0.7px;
 }
+.capacity-probe {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* 与 .preview-caption 的 max-width:96% 及左右 padding 对齐 */
+  width: calc(96% - 18px);
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+  font-size: 12px;
+}
 .preview-caption {
   max-width: 96%;
   padding: 4px 9px 9px;

@@ -1,3 +1,5 @@
+import { CAPACITY_EM_PER_LINE } from "./utils/textLayout";
+
 export type Format = "srt" | "vtt";
 export interface SubtitleCue {
   id: string;
@@ -40,6 +42,8 @@ export interface MeterState {
   selectedId: string | null;
   notice: string;
   zoom: number;
+  // 预览实测的每行可用宽度（em），检查与预览共用同一口径。
+  lineCapacityEm: number;
 }
 export const emptyState = (): MeterState => ({
   phase: "empty",
@@ -48,4 +52,5 @@ export const emptyState = (): MeterState => ({
   selectedId: null,
   notice: "",
   zoom: 1,
+  lineCapacityEm: CAPACITY_EM_PER_LINE,
 });

@@ -1,5 +1,6 @@
 import type { SubtitleCue, SubtitleIssue } from "../models";
 import type { SubtitleMeterViewModel } from "../viewmodels/subtitleMeterViewModel";
+import { visibleCharCount } from "../utils/textLayout";
 export function InspectionModule({
   cues,
   issues,
@@ -17,7 +18,7 @@ export function InspectionModule({
     (issue) => issue.severity === "warning",
   ).length;
   const cps = selected
-    ? [...selected.text.replace(/\s/g, "")].length /
+    ? visibleCharCount(selected.text) /
       Math.max(0.1, (selected.endMs - selected.startMs) / 1000)
     : 0;
   return (
